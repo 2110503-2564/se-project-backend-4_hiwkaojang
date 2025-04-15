@@ -45,6 +45,12 @@ const DentistSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    //Add StartingPrice field to store starting price of dentist
+    StartingPrice: {
+      type: Number,
+      required: [true, "Please add a starting price"],
+      min: [0, "Starting price cannot be negative"],
+    },
     //Add Rating field to store rating value for US1-1
     Rating: {
       type: Number,

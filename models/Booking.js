@@ -15,6 +15,7 @@ const BookingSchema = new mongoose.Schema({
         ref: 'Dentist',
         required: true
     },
+    //Add a field status to track the status of the booking
     status: {
         type: String,
         enum: ['upcoming', 'completed', 'cancelled'],
