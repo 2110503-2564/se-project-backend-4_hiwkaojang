@@ -3,6 +3,7 @@ const Dentist = require('../models/Dentist');
 
 //@desc Get all booking
 //@route GET /api/v1/bookings
+//@route GET by Filter status ex. /api/v1/bookings?status=complete (Filter: status = complete ) can filter 3 status ( upcoming , completed , cancelled ) 
 //@access Private
 exports.getBookings = async (req,res,next) => {
     let query;
@@ -18,6 +19,11 @@ exports.getBookings = async (req,res,next) => {
         } else {
             query = Booking.find().populate({path:'dentist',select:'name year_experience area_expertise'});
         }
+    }
+
+    // Add status filtering
+    if (req.query.status) {
+        query = query.find({ status: req.query.status });
     }
 
     try {
