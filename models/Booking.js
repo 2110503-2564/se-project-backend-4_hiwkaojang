@@ -15,6 +15,11 @@ const BookingSchema = new mongoose.Schema({
         ref: 'Dentist',
         required: true
     },
+    status: {
+        type: String,
+        enum: ['upcoming', 'completed', 'cancelled'],
+        default: 'upcoming'
+    },
     createdAt: {
         type: Date,
         default: Date.now
