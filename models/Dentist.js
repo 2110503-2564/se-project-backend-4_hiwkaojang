@@ -1,35 +1,70 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const DentistSchema = new mongoose.Schema({
+const TimeSlotSchema = new mongoose.Schema(
+  {
+    start: {
+      type: String,
+      required: true,
+    },
+    end: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false }
+);
+
+const AvailabilityDateSchema = new mongoose.Schema(
+  {
+    date: {
+      type: Date,
+      required: true,
+    },
+    slots: [TimeSlotSchema],
+  },
+  { _id: false }
+);
+
+const DentistSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: [true, 'Please add a name'],
-        unique: true,
+      type: String,
+      required: [true, "Please add a name"],
+      unique: true,
     },
     year_experience: {
-        type: Number,
-        required: [true, 'Please add years of experience'],
-        min: [0, 'Years of experience cannot be negative']
+      type: Number,
+      required: [true, "Please add years of experience"],
+      min: [0, "Years of experience cannot be negative"],
     },
     area_expertise: {
-        type: String,
-        required: [true, 'Please add an area of expertise']
+      type: String,
+      required: [true, "Please add an area of expertise"],
     },
     picture: {
-        type: String,
-        required: false,
-    }
-}, {
-    toJSON: {virtuals:true},
-    toObject: {virtuals:true}
-});
+      type: String,
+      required: false,
+    },
+    //Add Rating field to store rating value for US1-1
+    Rating: {
+      type: Number,
+      required: false,
+    },
+    //Add avialbility calendar
+    availability: [AvailabilityDateSchema],
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
 
 //Reverse populate with virtuals
-DentistSchema.virtual('bookings', {
-    ref: 'Booking',
-    localField: '_id',
-    foreignField: 'dentist',
-    justOne:false
+DentistSchema.virtual("bookings", {
+  ref: "Booking",
+  localField: "_id",
+  foreignField: "dentist",
+  justOne: false,
 });
 
-module.exports = mongoose.model('Dentist', DentistSchema);
+module.exports = mongoose.model("Dentist", DentistSchema);
