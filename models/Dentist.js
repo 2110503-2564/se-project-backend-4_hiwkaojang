@@ -25,6 +25,26 @@ const AvailabilityDateSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const RatingSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
+    },
+    review: {
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
+
 const DentistSchema = new mongoose.Schema(
   {
     name: {
@@ -52,10 +72,7 @@ const DentistSchema = new mongoose.Schema(
       min: [0, "Starting price cannot be negative"],
     },
     //Add Rating field to store rating value for US1-1
-    Rating: {
-      type: Number,
-      required: false,
-    },
+    rating: [RatingSchema],
     //Add avialbility calendar
     availability: [AvailabilityDateSchema],
   },
