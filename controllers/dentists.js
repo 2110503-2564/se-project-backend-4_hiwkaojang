@@ -100,6 +100,34 @@ exports.createDentist = async (req, res, next) => {
     res.status(201).json({ sucess: true, data: dentist });
 };
 
+// @desc    Get reviews for a single dentist
+// @route   GET /api/v1/dentists/:dentistId/reviews
+// @access  Public
+exports.getDentistReviews = async (req, res, next) => {
+    try {
+        const dentist = await Dentist.findById(req.params.dentistId)
+                                     .select('rating') 
+                                     .populate({
+                                         path: 'rating.user', 
+                                         select: 'name'
+                                     });
+
+        if (!dentist) {
+            return res.status(404).json({ success: false, message: `No dentist found with the id of ${req.params.dentistId}` });
+        }
+
+        res.status(200).json({
+            success: true,
+            count: dentist.rating.length, 
+            data: dentist.rating          
+        });
+
+    } catch (err) {
+        console.error(err); 
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
 //@desc Update single dentist
 //@route PUT /api/v1/dentist/:id
 //@access Private
