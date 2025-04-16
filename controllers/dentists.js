@@ -121,6 +121,77 @@ exports.updateDentist = async (req, res, next) => {
 
 };
 
+//@desc Update single dentist's review
+//@route PUT /api/v1/dentist/review/:id
+//@access Private
+exports.updateDentistReview = async (req, res, next) => {
+    try {
+
+        const reviewToPush = {
+            rating : {
+            user : req.user.id,
+            rating : req.body.rating,
+            review : req.body.review
+            }
+        }
+
+        const reviewToPull = {
+            rating : {
+                user : req.user.id,
+            }
+        }
+
+
+        //Remove any existing reviews by this user
+        await Dentist.findByIdAndUpdate(req.params.id , {$pull : reviewToPull});
+
+        //Add a review for this user
+        const dentist = await Dentist.findByIdAndUpdate(req.params.id, { $push : reviewToPush }, {
+            new: true,
+            runValidators: true
+        });
+
+        //Effectively makes this both an update and create function
+        if (!dentist) {
+            return res.status(400).json({ sucess: false });
+        }
+
+        res.status(200).json({ sucess: true, data: dentist });
+    } catch (err) {
+        res.status(400).json({ sucess: false });
+    }
+
+};
+
+//@desc Remove single dentist's review(s)
+//@route PUT /api/v1/dentist/review/:id
+//@access Private
+exports.removeDentistReview = async (req, res, next) => {
+    try {
+
+        const reviewToPull = {
+            rating : {
+                user : req.user.id,
+            }
+        }
+
+        //PULL(remove) this dentist's review(s) matching user's id
+        const dentist = await Dentist.findByIdAndUpdate(req.params.id, { $pull : reviewToPull }, {
+            new: true,
+            runValidators: true
+        });
+
+        if (!dentist) {
+            return res.status(400).json({ sucess: false });
+        }
+
+        res.status(200).json({ sucess: true, data: dentist });
+    } catch (err) {
+        res.status(400).json({ sucess: false });
+    }
+
+};
+
 //@desc Delete single dentist
 //@route DELETE /api/v1/dentist/:id
 //@access Private
