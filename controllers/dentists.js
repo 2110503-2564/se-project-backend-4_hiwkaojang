@@ -101,11 +101,11 @@ exports.createDentist = async (req, res, next) => {
 };
 
 // @desc    Get reviews for a single dentist
-// @route   GET /api/v1/dentists/:dentistId/reviews
+// @route   GET /api/v1/dentists/reviews/:id
 // @access  Public
 exports.getDentistReviews = async (req, res, next) => {
     try {
-        const dentist = await Dentist.findById(req.params.dentistId)
+        const dentist = await Dentist.findById(req.params.id)
                                      .select('rating') 
                                      .populate({
                                          path: 'rating.user', 
@@ -129,7 +129,7 @@ exports.getDentistReviews = async (req, res, next) => {
 };
 
 //@desc Update single dentist
-//@route PUT /api/v1/dentist/:id
+//@route PUT /api/v1/dentists/:id
 //@access Private
 exports.updateDentist = async (req, res, next) => {
     try {
@@ -149,8 +149,8 @@ exports.updateDentist = async (req, res, next) => {
 
 };
 
-//@desc Update single dentist's review
-//@route PUT /api/v1/dentist/review/:id
+//@desc Update/Create single dentist's review
+//@route PUT /api/v1/dentists/reviews/:id
 //@access Private
 exports.updateDentistReview = async (req, res, next) => {
     try {
@@ -192,7 +192,7 @@ exports.updateDentistReview = async (req, res, next) => {
 };
 
 //@desc Remove single dentist's review(s)
-//@route PUT /api/v1/dentist/review/:id
+//@route PUT /api/v1/dentists/reviews/:id
 //@access Private
 exports.removeDentistReview = async (req, res, next) => {
     try {
@@ -220,8 +220,29 @@ exports.removeDentistReview = async (req, res, next) => {
 
 };
 
+//@desc Get all booked dates of this dentist
+//@route GET /api/v1/dentists/availibility/:id
+//@access Private
+exports.getDentistBookedDates = async (req, res, next) => {
+    try {
+        const bookedDates = await Booking.find({
+            dentists : req.params.id,
+            status : "upcoming",
+        }).select('bookingDate')
+
+        res.status(200).json({
+            success : true,
+            data : bookedDates
+        })
+
+    } catch (err) {
+        res.status(400).json({ sucess: false });
+    }
+
+};
+
 //@desc Delete single dentist
-//@route DELETE /api/v1/dentist/:id
+//@route DELETE /api/v1/dentists/:id
 //@access Private
 exports.deleteDentist = async (req, res, next) => {
     try {

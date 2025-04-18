@@ -8,7 +8,8 @@ const {
     deleteDentist,
     updateDentistReview,
     removeDentistReview,
-    getDentistReviews 
+    getDentistReviews, 
+    getDentistBookedDates
 } = require('../controllers/dentists');
 
 //Include other resource routers
@@ -21,9 +22,6 @@ const { protect, authorize } = require('../middleware/auth');
 //Re-route into other resource routers
 router.use('/:dentistId/bookings/', bookingRouter);
 
-// GET /api/v1/dentists/609cbfd6e8a1d8a8d8f8d8f8/reviews
-router.route('/:dentistId/reviews').get(getDentistReviews);
-
 router.route('/')
     .get(getDentists)
     .post(protect, authorize('admin'), createDentist);
@@ -33,8 +31,11 @@ router.route('/:id')
     .put(protect, authorize('admin'), updateDentist)
     .delete(protect, authorize('admin'), deleteDentist);
 
-router.route('/review/:id')
+router.route('/reviews/:id')
+    .get(getDentistReviews)
     .put(protect, authorize('admin', 'user'), updateDentistReview)
     .delete(protect, authorize('admin', 'user'), removeDentistReview);
+
+router.route('/availibility/:id').get(getDentistBookedDates);
     
 module.exports = router;
