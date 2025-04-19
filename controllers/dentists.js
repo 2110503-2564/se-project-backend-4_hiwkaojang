@@ -226,7 +226,7 @@ exports.removeDentistReview = async (req, res, next) => {
 exports.getDentistBookedDates = async (req, res, next) => {
     try {
         const bookedDates = await Booking.find({
-            dentists : req.params.id,
+            dentist : req.params.id,
             status : "upcoming",
         }).select('bookingDate')
 
