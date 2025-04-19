@@ -42,29 +42,10 @@ app.use(xss());
 app.use(hpp());
 
 //Enable CORS
-// CORS Configuration
-const allowedOrigins = [
-    'http://localhost:3000/',  // Your local dev frontend
-    'https://se-project-frontend-4-hiwkaojang.vercel.app/'  // Your Vercel frontend URL
-];
-
-// CORS options for more control
 const corsOptions = {
-    origin: function (origin, callback) {
-        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-            // Allow requests from the allowed origins or no origin (for Postman/Insomnia, etc.)
-            callback(null, true);
-        } else {
-            // Reject the request if the origin is not allowed
-            callback(new Error('Not allowed by CORS'), false);
-        }
-    },
-    methods: 'GET,POST,PUT,DELETE',  // Allowed methods
-    credentials: true,  // Allows cookies or authorization headers with requests
-};
-
-// Apply CORS middleware
-app.use(cors(corsOptions));
+    origin: '*',  // Allow all origins for testing
+  };
+app.use(cors(corsOptions));  // CORS middleware should be above routes
 
 //Rate Limiting
 const limiter = rateLimit({
