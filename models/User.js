@@ -28,8 +28,12 @@ const UserSchema = new mongoose.Schema({
     },    
     role: {
         type: String,
-        enum: ['user', 'admin', 'banned'],
+        enum: ['user', 'admin', 'banned', 'dentist'],
         default: 'user'
+    },
+    dentist_id: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Dentist'
     },
     password: {
         type: String,
