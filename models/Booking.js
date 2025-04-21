@@ -24,6 +24,9 @@ const BookingSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    treatmentDetail: {
+        type: String
     }
 });
 
