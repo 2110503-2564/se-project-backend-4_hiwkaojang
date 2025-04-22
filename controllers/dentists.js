@@ -133,20 +133,27 @@ exports.getDentistReviews = async (req, res, next) => {
 //@access Private
 exports.updateDentist = async (req, res, next) => {
     try {
+        // Extra check for dentist role to ensure they can only update their own profile
+        if (req.user.role === 'dentist' && req.params.id !== req.user.dentist_id.toString()) {
+            return res.status(403).json({
+                success: false, 
+                message: `Dentist user ${req.user.id} is not authorized to update another dentist's profile`
+            });
+        }
+
         const dentist = await Dentist.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
         });
 
         if (!dentist) {
-            return res.status(400).json({ sucess: false });
+            return res.status(400).json({ success: false });
         }
 
-        res.status(200).json({ sucess: true, data: dentist });
+        res.status(200).json({ success: true, data: dentist });
     } catch (err) {
-        res.status(400).json({ sucess: false });
+        res.status(400).json({ success: false });
     }
-
 };
 
 //@desc Update/Create single dentist's review

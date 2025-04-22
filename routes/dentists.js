@@ -23,9 +23,9 @@ router.route('/')
     .get(getDentists)
     .post(protect, authorize('admin'), createDentist);
 
-router.route('/:id')
+    router.route('/:id')
     .get(getDentist)
-    .put(protect, authorize('admin'), updateDentist)
+    .put(protect, authorize('admin', 'dentist'), updateDentist)
     .delete(protect, authorize('admin'), deleteDentist);
 
 // New expertise modification routes
