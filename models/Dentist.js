@@ -59,7 +59,9 @@ const DentistSchema = new mongoose.Schema(
     },
     area_expertise: {
       type: String,
+      enum: ['Orthodontics', 'Endodontics', 'Prosthodontics', 'Pediatric Dentistry', 'Oral Surgery', 'Periodontics', 'Cosmetic Dentistry', 'General Dentistry', 'Implant Dentistry'],
       required: [true, "Please add an area of expertise"],
+      default: 'General Dentistry'
     },
     picture: {
       type: String,
