@@ -58,10 +58,11 @@ const DentistSchema = new mongoose.Schema(
       min: [0, "Years of experience cannot be negative"],
     },
     area_expertise: {
-      type: String,
+      type: [String],
       enum: ['Orthodontics', 'Endodontics', 'Prosthodontics', 'Pediatric Dentistry', 'Oral Surgery', 'Periodontics', 'Cosmetic Dentistry', 'General Dentistry', 'Implant Dentistry'],
       required: [true, "Please add an area of expertise"],
-      default: 'General Dentistry'
+      default: 'General Dentistry',
+      validate: [array => array.length > 0, "At least one area of expertise is required"]
     },
     picture: {
       type: String,

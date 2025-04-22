@@ -261,3 +261,57 @@ exports.deleteDentist = async (req, res, next) => {
     }
 
 };
+
+//@desc Add an area of expertise to a dentist
+//@route PUT /api/v1/dentists/:id/expertise
+//@access Private
+exports.addExpertise = async (req, res) => {
+    try {
+        const { expertise } = req.body;
+
+        if (!expertise) {
+            return res.status(400).json({ success: false, message: "No expertise provided" });
+        }
+
+        const dentist = await Dentist.findByIdAndUpdate(
+            req.params.id,
+            { $addToSet: { area_expertise: expertise } }, // Avoid duplicates
+            { new: true, runValidators: true }
+        );
+
+        if (!dentist) {
+            return res.status(404).json({ success: false, message: "Dentist not found" });
+        }
+
+        res.status(200).json({ success: true, data: dentist });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+//@desc Remove an area of expertise from a dentist
+//@route DELETE /api/v1/dentists/:id/expertise
+//@access Private
+exports.removeExpertise = async (req, res) => {
+    try {
+        const { expertise } = req.body;
+
+        if (!expertise) {
+            return res.status(400).json({ success: false, message: "No expertise provided" });
+        }
+
+        const dentist = await Dentist.findByIdAndUpdate(
+            req.params.id,
+            { $pull: { area_expertise: expertise } },
+            { new: true, runValidators: true }
+        );
+
+        if (!dentist) {
+            return res.status(404).json({ success: false, message: "Dentist not found" });
+        }
+
+        res.status(200).json({ success: true, data: dentist });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
