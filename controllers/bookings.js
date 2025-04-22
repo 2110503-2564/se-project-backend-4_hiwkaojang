@@ -1,5 +1,6 @@
 const Booking = require('../models/Booking');
 const Dentist = require('../models/Dentist');
+const mongoose = require('mongoose');
 
 //@desc Get all booking
 //@route GET /api/v1/bookings
@@ -9,9 +10,17 @@ exports.getBookings = async (req,res,next) => {
     let query;
 
     //General users can see only their booking!
-    if(req.user.role !== 'admin') {
-        query = Booking.find({user:req.user.id}).populate({path:'dentist',select:'name year_experience area_expertise'});
-    } else {
+    if (req.user.role === 'dentist') {
+        query = Booking.find({ dentist: req.user.dentist_id }).populate({
+          path: 'dentist',
+          select: 'name year_experience area_expertise',
+        });
+      } else if(req.user.role !== 'admin') {
+        query = Booking.find({ user: req.user.id }).populate({
+          path: 'dentist',
+          select: 'name year_experience area_expertise',
+        });
+      } else {
         //If you are and admin, you can see all!
         if(req.params.dentistId) {
             console.log(req.params.dentistId);
@@ -23,7 +32,7 @@ exports.getBookings = async (req,res,next) => {
 
     // Add status filtering
     if (req.query.status) {
-        query = query.find({ status: req.query.status });
+        query = query.where('status').equals(req.query.status);
     }
 
     try {
