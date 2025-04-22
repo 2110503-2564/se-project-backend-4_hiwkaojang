@@ -316,6 +316,12 @@ exports.removeExpertise = async (req, res) => {
             return res.status(404).json({ success: false, message: "Dentist not found" });
         }
 
+        if (req.user.role === 'dentist' && dentist.id.toString() !== req.user.dentist_id.toString()) {
+            return res.status(401).json({success:false, message:`Dentist user ${req.user.dentist_id} is not authorized to update this Expertise`});
+          } else if (dentist.id.toString() !== req.user.dentist_id.toString() && req.user.role !== 'admin') {
+            return res.status(401).json({success:false, message:`User ${req.user.id} is not authorized to update this Expertise`});
+          }
+
         res.status(200).json({ success: true, data: dentist });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
