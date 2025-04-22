@@ -30,7 +30,7 @@ router.route('/:id')
 
 // New expertise modification routes
 router.route('/:id/expertise')
-    .put(protect, authorize('admin'), addExpertise)
+    .put(protect, authorize('admin','dentist'), addExpertise)
     .delete(protect, authorize('admin'), removeExpertise);
 
 router.route('/reviews/:id')
