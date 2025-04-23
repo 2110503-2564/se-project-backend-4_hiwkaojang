@@ -101,30 +101,44 @@ exports.addBooking = async (req,res,next) => {
 //@desc Update booking
 //@route PUT /api/v1/bookings/:id
 //@access Private
-exports.updateBooking = async (req,res,next) => {
+exports.updateBooking = async (req, res, next) => {
     try {
         let booking = await Booking.findById(req.params.id);
 
-        if(!booking) {
-            return res.status(404).json({success:false, message:`No booking with the id of ${req.params.id}`});
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                message: `No booking with the id of ${req.params.id}`
+            });
         }
 
-        //Make sure user is the booking owner
-        if(booking.user.toString() !== req.user.id && req.user.role !== 'admin' && (req.user.role !== 'dentist' || booking.dentist.toString() !== req.user.id)) {
-            return res.status(401).json({success:false, message:`User ${req.user.id} is not authorized to update this booking`});
+        // Allow only: booking owner (user), assigned dentist, or admin
+        const isUserOwner = booking.user.toString() === req.user.id;
+        const isDentistOwner = req.user.role === 'dentist' && booking.dentist.toString() === req.user.dentist_id?.toString(); // use .dentist_id as per your structure
+        const isAdmin = req.user.role === 'admin';
+
+        if (!isUserOwner && !isDentistOwner && !isAdmin) {
+            return res.status(401).json({
+                success: false,
+                message: `User ${req.user.id} is not authorized to update this booking`
+            });
         }
 
-        booking = await Booking.findByIdAndUpdate(req.params.id,req.body, {
-            new:true,
-            runValidators:true
+        booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
         });
 
-        res.status(200).json({success:true, data: booking});
-    } catch(error) {
-        console.log(error);
-        return res.status(500).json({success:false, message:'Cannot update Booking'});
+        res.status(200).json({ success: true, data: booking });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Cannot update Booking'
+        });
     }
-}
+};
+
 
 //@desc Delete booking
 //@route DELETE /api/v1/bookings/:bookingId/booking
