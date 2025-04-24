@@ -233,19 +233,18 @@ exports.removeDentistReview = async (req, res, next) => {
 exports.getDentistBookedDates = async (req, res, next) => {
     try {
         const bookedDates = await Booking.find({
-            dentist : req.params.id,
-            status : "upcoming",
-        }).select('bookingDate')
+            dentist: req.params.id,
+            status: { $in: ["upcoming", "confirmed", "blocked"] }
+        }).select('bookingDate');
 
         res.status(200).json({
-            success : true,
-            data : bookedDates
-        })
+            success: true,
+            data: bookedDates
+        });
 
     } catch (err) {
-        res.status(400).json({ sucess: false });
+        res.status(400).json({ success: false });
     }
-
 };
 
 //@desc Delete single dentist
