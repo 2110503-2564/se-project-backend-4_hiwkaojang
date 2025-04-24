@@ -18,7 +18,7 @@ const BookingSchema = new mongoose.Schema({
     //Add a field status to track the status of the booking
     status: {
         type: String,
-        enum: ['upcoming', 'completed', 'cancelled'],
+        enum: ['upcoming', 'completed', 'cancelled','confirmed'],
         default: 'upcoming'
     },
     createdAt: {
