@@ -73,6 +73,10 @@ exports.getBooking = async (req,res,next) => {
         const booking = await Booking.findById(req.params.id).populate({
             path: 'dentist',
             select: 'name year_experience area_expertise'
+        })
+        .populate({
+            path: 'user',
+            select: 'name email' // or other fields you want to return
         });
 
         if(!booking) {
