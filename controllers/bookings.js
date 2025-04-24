@@ -45,25 +45,38 @@ exports.getBookings = async (req,res,next) => {
     }
 }
 
-//@desc Get all booking
-//@route GET /api/v1/patienthistory
-//@access Private
+//@desc Get booking history by patient (user) ID
+//@route GET /api/v1/bookings/patientHistory/:userId
+//@access Private (admin or the user themselves)
 exports.getPatientHistory = async (req, res, next) => {
-    let query;
-    query = Booking.find().populate({
-        path: 'dentist',
-        select: 'name year_experience area_expertise',
-    });
-
     try {
-        const bookings = await query;
+        const { userId } = req.params;
 
-        res.status(200).json({success:true, count:bookings.length, data:bookings})
-    } catch(error) {
-        console.log(error);
-        return res.status(500).json({sucess:false, message:'Cannot find Booking'});
+        // Only allow if user is admin or accessing their own data
+        if (req.user.role !== 'dentist' && req.user.id !== userId) {
+            return res.status(403).json({ success: false, message: 'Not authorized to access this patient history' });
+        }
+
+        const bookings = await Booking.find({ user: userId })
+            .populate({
+                path: 'dentist',
+                select: 'name year_experience area_expertise',
+            });
+
+        res.status(200).json({
+            success: true,
+            count: bookings.length,
+            data: bookings,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Cannot retrieve patient history',
+        });
     }
-}
+};
+
 
 //@desc Get single booking
 //@route GET /api/v1/booking:id
