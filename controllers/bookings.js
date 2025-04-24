@@ -45,6 +45,26 @@ exports.getBookings = async (req,res,next) => {
     }
 }
 
+//@desc Get all booking
+//@route GET /api/v1/patienthistory
+//@access Private
+exports.getPatientHistory = async (req, res, next) => {
+    let query;
+    query = Booking.find().populate({
+        path: 'dentist',
+        select: 'name year_experience area_expertise',
+    });
+
+    try {
+        const bookings = await query;
+
+        res.status(200).json({success:true, count:bookings.length, data:bookings})
+    } catch(error) {
+        console.log(error);
+        return res.status(500).json({sucess:false, message:'Cannot find Booking'});
+    }
+}
+
 //@desc Get single booking
 //@route GET /api/v1/booking:id
 //@access Public
