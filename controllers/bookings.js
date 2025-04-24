@@ -103,35 +103,45 @@ exports.getBooking = async (req,res,next) => {
     }
 }
 
-//@desc Add booking
-//@route POST /api/v1/bookings/:bookingId/booking
-//@access Private
-exports.addBooking = async (req,res,next) => {
+exports.addBooking = async (req, res, next) => {
     try {
         req.body.dentist = req.params.dentistId;
 
         const dentist = await Dentist.findById(req.params.dentistId);
 
-        if(!dentist) {
-            return res.status(404).json({success:false, message:`No dentist with the id of ${req.params.dentistId}`});
+        if (!dentist) {
+            return res.status(404).json({
+                success: false,
+                message: `No dentist with the id of ${req.params.dentistId}`
+            });
         }
 
-        //add user Id to req.body
+        // Add user ID to req.body
         req.body.user = req.user.id;
+
         // Check if user already has an upcoming booking
         const upcomingBookings = await Booking.find({ user: req.user.id, status: 'upcoming' });
 
-        //If the user is not an admin, they can only create 1 booking.
-        if(upcomingBookings.length >= 1 && req.user.role !== 'admin') {
-            return res.status(400).json({success:false, message:`The user with ID ${req.user.id} has already made 1 booking`});
+        // Allow multiple bookings for 'admin' and 'dentist', limit regular users
+        if (upcomingBookings.length >= 1 && !['admin', 'dentist'].includes(req.user.role)) {
+            return res.status(400).json({
+                success: false,
+                message: `The user with ID ${req.user.id} has already made 1 booking`
+            });
         }
 
         const booking = await Booking.create(req.body);
 
-        res.status(200).json({success:true, data:booking});
-    } catch(error) {
+        res.status(200).json({
+            success: true,
+            data: booking
+        });
+    } catch (error) {
         console.log(error);
-        return res.status(500).json({success:false, message:'Cannot create Booking'});
+        return res.status(500).json({
+            success: false,
+            message: 'Cannot create Booking'
+        });
     }
 }
 
