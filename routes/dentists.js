@@ -40,5 +40,47 @@ router.route('/reviews/:id')
 
 router.route('/availibility/:id')
     .get(getDentistBookedDates);
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Dentist:
+ *       type: object
+ *       required:
+ *         - year_experience
+ *         - area_experience
+ *         - name
+ *         - StartingPrice
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           desciption: The auto-generated id of the hospital
+ *           example: d290f1ee-6c54-4b01-90e6-d701748f0851
+ *         name:
+ *           type: string
+ *           desciption: Dentist name
+ *         year_experience:
+ *           type: integer
+ *           desciption: Dentist Year experience
+ *           minimum: 0 
+ *         area_expertise:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum:
+ *               - Orthodontics
+ *               - Endodontics
+ *               - Prosthodontics
+ *               - Pediatric Dentistry
+ *               - Oral Surgery
+ *               - Periodontics
+ *               - Cosmetic Dentistry
+ *               - General Dentistry
+ *               - Implant Dentistry
+ *           description: expert
+ *           example: ["General Dentistry", "Cosmetic Dentistry"]
+ *       
+ */
 
 module.exports = router;

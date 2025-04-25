@@ -29,4 +29,13 @@ router.route('/:id/confirm')
 router.route('/patientHistory/:userId')
   .get(protect, authorize('dentist'), getPatientHistory);
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Booking:
+ *       type: object
+ *       
+ */
+
 module.exports = router;
