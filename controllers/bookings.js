@@ -283,6 +283,7 @@ exports.confirmBooking = async (req, res, next) => {
 
         // Only allow confirmation if the booking is in "upcoming" status
         if (booking.status !== 'upcoming') {
+            console.log("400 backend upcomming false")
             return res.status(400).json({
                 success: false,
                 message: `Booking is already ${booking.status}. Only upcoming bookings can be confirmed.`
@@ -293,7 +294,8 @@ exports.confirmBooking = async (req, res, next) => {
         booking.status = 'confirmed';
         await booking.save();
 
-        res.status(200).json({
+        console.log("Pass 200 confirm")
+        return res.status(200).json({
             success: true,
             data: booking,
             message: 'Appointment confirmed successfully'
