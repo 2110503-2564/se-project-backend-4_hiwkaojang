@@ -8,6 +8,8 @@ const {xss} = require('express-xss-sanitizer');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const cors = require('cors');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUI = require('swagger-ui-express');
 
 //Load env vars
 dotenv.config({path:'./config/config.env'});
@@ -52,6 +54,22 @@ const limiter = rateLimit({
     windowMs: 10 * 60 * 1000, // 10 mins
     max: 100,
 });
+
+//swagger
+const swaggerOptions={
+    swaggerDefinition:{
+        openapi: '3.0.0',
+        info: {
+            title: 'Library API',
+            version: '1.0.0',
+            description: 'A simple Express Dental API'
+        }
+    },
+    apis:['./routes/*.js'],
+};
+
+const swaggerDocs=swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 //Mount routers
 app.use('/api/v1/dentists', dentists);
