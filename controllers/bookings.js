@@ -1,6 +1,8 @@
 const Booking = require('../models/Booking');
 const Dentist = require('../models/Dentist');
+const User = require('../models/User');
 const mongoose = require('mongoose');
+const { sendAppointmentConfirmationEmail } = require('../utils/emailService');
 
 //@desc Get all booking
 //@route GET /api/v1/bookings
@@ -77,7 +79,6 @@ exports.getPatientHistory = async (req, res, next) => {
     }
 };
 
-
 //@desc Get single booking
 //@route GET /api/v1/booking:id
 //@access Public
@@ -103,6 +104,9 @@ exports.getBooking = async (req,res,next) => {
     }
 }
 
+//@desc Add booking
+//@route POST /api/v1/dentists/:dentistId/bookings
+//@access Private
 exports.addBooking = async (req, res, next) => {
     try {
         req.body.dentist = req.params.dentistId;
@@ -131,6 +135,29 @@ exports.addBooking = async (req, res, next) => {
         }
 
         const booking = await Booking.create(req.body);
+
+        // Get the user details for sending the email
+        const user = await User.findById(req.user.id);
+
+        if (user && user.email) {
+            try {
+                // Get base URL from environment variable or default to localhost
+                const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+                
+                // Send confirmation email
+                await sendAppointmentConfirmationEmail(
+                    booking,
+                    user,
+                    dentist,
+                    baseUrl
+                );
+                
+                console.log(`Confirmation email sent to ${user.email}`);
+            } catch (emailError) {
+                console.error('Failed to send confirmation email:', emailError);
+                // Continue even if email fails - don't block the booking
+            }
+        }
 
         res.status(200).json({
             success: true,
@@ -171,10 +198,39 @@ exports.updateBooking = async (req, res, next) => {
             });
         }
 
+        // Update the booking
         booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
         });
+
+        // If the booking date was changed, send a new confirmation email
+        if (req.body.bookingDate) {
+            // Populate with dentist and user information
+            booking = await Booking.findById(booking._id);
+            const dentist = await Dentist.findById(booking.dentist);
+            const user = await User.findById(booking.user);
+            
+            if (user && user.email && dentist) {
+                try {
+                    // Get base URL from environment variable or default to localhost
+                    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+                    
+                    // Send confirmation email for the updated booking
+                    await sendAppointmentConfirmationEmail(
+                        booking,
+                        user,
+                        dentist,
+                        baseUrl
+                    );
+                    
+                    console.log(`Updated booking confirmation email sent to ${user.email}`);
+                } catch (emailError) {
+                    console.error('Failed to send booking update email:', emailError);
+                    // Continue even if email fails
+                }
+            }
+        }
 
         res.status(200).json({ success: true, data: booking });
     } catch (error) {
@@ -185,7 +241,6 @@ exports.updateBooking = async (req, res, next) => {
         });
     }
 };
-
 
 //@desc Delete booking
 //@route DELETE /api/v1/bookings/:bookingId/booking
@@ -211,3 +266,43 @@ exports.deleteBooking = async (req,res,next) => {
         return res.status(500).json({success:false, message:'Cannot delete Booking'});
     }
 }
+
+//@desc Confirm a booking
+//@route PUT /api/v1/bookings/:id/confirm
+//@access Public (accessible via email link)
+exports.confirmBooking = async (req, res, next) => {
+    try {
+        const booking = await Booking.findById(req.params.id);
+
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                message: `No booking found with the id of ${req.params.id}`
+            });
+        }
+
+        // Only allow confirmation if the booking is in "upcoming" status
+        if (booking.status !== 'upcoming') {
+            return res.status(400).json({
+                success: false,
+                message: `Booking is already ${booking.status}. Only upcoming bookings can be confirmed.`
+            });
+        }
+
+        // Update the booking status to confirmed
+        booking.status = 'confirmed';
+        await booking.save();
+
+        res.status(200).json({
+            success: true,
+            data: booking,
+            message: 'Appointment confirmed successfully'
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+};
