@@ -55,7 +55,7 @@ exports.getPatientHistory = async (req, res, next) => {
         const { userId } = req.params;
 
         // Only allow if user is admin or accessing their own data
-        if (req.user.role !== 'dentist' && req.user.id !== userId) {
+        if (req.user.role !== 'admin' && req.user.role !== 'dentist' && req.user.id !== userId) {
             return res.status(403).json({ success: false, message: 'Not authorized to access this patient history' });
         }
 
