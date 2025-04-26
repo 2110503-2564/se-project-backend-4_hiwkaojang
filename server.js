@@ -63,7 +63,12 @@ const swaggerOptions={
             title: 'Library API',
             version: '1.0.0',
             description: 'A simple Express Dental API'
-        }
+        },
+        servers: [
+            {
+                url: process.env.HOST + ':' + process.env.PORT + '/api/v1'
+            }
+        ]
     },
     apis:['./routes/*.js'],
 };
