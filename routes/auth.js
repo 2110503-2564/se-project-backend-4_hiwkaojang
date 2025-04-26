@@ -150,7 +150,7 @@ router.get('/logout', logout);
  *                 example: password123
  *               role:
  *                 type: string
- *                 enum: [user, admin, dentist]
+ *                 enum: [user, admin, dentist, banned]
  *                 description: User role (defaults to 'user' if not specified)
  *                 example: user
  *     responses:

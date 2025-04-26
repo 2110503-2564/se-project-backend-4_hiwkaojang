@@ -80,7 +80,7 @@ router.route('/patientHistory/:userId')
  *         bookingDate: 2025-09-01T17:00:00.000+00:00
  *         user: 67fde38d5a0148bd60617086
  *         dentist: 67fde38d5a0148bd60617087
- *         status: confirmed
+ *         status: completed
  *         createdAt: 2025-04-15T05:00:14.407+00:00
  *         treatmentDetail: "Regular dental checkup and cleaning"
  *   responses:
@@ -308,16 +308,41 @@ router.route('/patientHistory/:userId')
  *                 type: string
  *                 format: date-time
  *                 description: Date and time of the appointment
- *               treatmentDetail:
- *                 type: string
- *                 description: Details about the treatment
  *     responses:
  *       200:
  *         description: Created booking
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/responses/BookingResponse'
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "67fde7ded883ed6a5f67590d"
+ *                     bookingDate:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-09-01T17:00:00.000Z"
+ *                     user:
+ *                       type: string
+ *                       example: "67fde38d5a0148bd60617086"
+ *                     dentist:
+ *                       type: string
+ *                       example: "67fde38d5a0148bd60617087"
+ *                     status:
+ *                       type: string
+ *                       enum: [upcoming, completed, cancelled, confirmed, blocked]
+ *                       example: "upcoming"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-04-15T05:00:14.407Z"
  *       400:
  *         description: Bad request - User already has an upcoming booking
  *       401:
@@ -352,8 +377,31 @@ router.route('/patientHistory/:userId')
  *               properties:
  *                 success:
  *                   type: boolean
+ *                   example: true
  *                 data:
- *                   $ref: '#/components/schemas/Booking'
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "67fde7ded883ed6a5f67590d"
+ *                     bookingDate:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-09-01T17:00:00.000Z"
+ *                     user:
+ *                       type: string
+ *                       example: "67fde38d5a0148bd60617086"
+ *                     dentist:
+ *                       type: string
+ *                       example: "67fde38d5a0148bd60617087"
+ *                     status:
+ *                       type: string
+ *                       enum: [upcoming, completed, cancelled, confirmed, blocked]
+ *                       example: "confirmed"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-04-15T05:00:14.407Z"
  *                 message:
  *                   type: string
  *                   example: Appointment confirmed successfully
