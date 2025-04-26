@@ -27,6 +27,7 @@ router.get('/logout', logout);
  *         - name
  *         - email
  *         - password
+ *         - telephone
  *       properties:
  *         _id:
  *           type: string
@@ -44,10 +45,10 @@ router.get('/logout', logout);
  *         telephone:
  *           type: string
  *           description: User's telephone number
- *           example: "+6612345678"
+ *           example: "0951341532"
  *         role:
  *           type: string
- *           enum: [user, admin, dentist]
+ *           enum: [user, admin, dentist, banned]
  *           description: User role (defaults to 'user' if not specified)
  *           example: user
  *         createdAt:
@@ -88,10 +89,10 @@ router.get('/logout', logout);
  *         telephone:
  *           type: string
  *           description: User's telephone number
- *           example: "+6612345678"  
+ *           example: "0951341532"  
  *         role:
  *           type: string
- *           enum: [user, admin, dentist]
+ *           enum: [user, admin, dentist, banned]
  *           description: User's role
  *           example: user
  *         token:
@@ -136,7 +137,7 @@ router.get('/logout', logout);
  *               telephone:
  *                 type: string
  *                 description: User's telephone number
- *                 example: "+6612345678"
+ *                 example: "0951341532"
  *               password:
  *                 type: string
  *                 format: password
