@@ -148,6 +148,10 @@ router.route('/availibility/:id')
  *                   - date
  *                   - slots
  *             description: avaiable schedule
+ *             example: {
+ *                         "_id": "68046ea78f9fb81cee08b0dd",
+ *                         "date": "2025-04-26"
+ *                      }
  *           bookings:
  *             type: array
  *             items:
@@ -156,6 +160,8 @@ router.route('/availibility/:id')
  *             description: รายการ Booking ที่เกี่ยวข้อง (Virtual Field)
  *             readOnly: true
  */
+
+
 /**
  * @swagger
  * tags:
@@ -172,11 +178,28 @@ router.route('/availibility/:id')
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Dentist'
+ *               type: object
+ *               properties:
+ *                 sucess:
+ *                   type: boolean
+ *                   example: true
+ *                 count:
+ *                   type: number
+ *                   example: 1
+ *                 data:
+ *                   type: array    
+ *                   items:
+ *                     $ref: '#/components/schemas/Dentist'
  *       400:
- *         description: sucess false
+ *         description: Unsuccess
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
  *   post:
  *     summary: Create a new dentist
  *     tags: [Dentists]
@@ -187,7 +210,45 @@ router.route('/availibility/:id')
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Dentist'
+ *             type: object
+ *             required:
+ *               - year_experience
+ *               - area_experience
+ *               - name
+ *               - StartingPrice
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 desciption: Dentist name
+ *               year_experience:
+ *                 type: integer
+ *                 desciption: Dentist Year experience
+ *                 minimum: 0 
+ *               area_expertise:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum:
+ *                     - Orthodontics
+ *                     - Endodontics
+ *                     - Prosthodontics
+ *                     - Pediatric Dentistry
+ *                     - Oral Surgery
+ *                     - Periodontics
+ *                     - Cosmetic Dentistry
+ *                     - General Dentistry
+ *                     - Implant Dentistry
+ *                 description: expert
+ *                 example: ["General Dentistry", "Cosmetic Dentistry"]
+ *               picture:
+ *                 type: string
+ *                 description: url picture
+ *                 example: "https://drive.google.com/uc?id=17c5YiQLtTjIU2LKuv39VE-kt40ADahSd"
+ *               StartingPrice:
+ *                 type: number
+ *                 description: strating price
+ *                 minimum: 0
+ *                 example: 1000
  *     responses:
  *       201:
  *         description: Successfully created dentist
@@ -219,7 +280,15 @@ router.route('/availibility/:id')
  *             schema:
  *               $ref: '#/components/schemas/Dentist'
  *       400:
- *         description: Unsucess
+ *         description: Unsuccess
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
  *   put:
  *     summary: Update a dentist's information
  *     tags: [Dentists]
@@ -237,7 +306,11 @@ router.route('/availibility/:id')
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Dentist'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: john
  *     responses:
  *       200:
  *         description: Successfully updated dentist
@@ -247,10 +320,29 @@ router.route('/availibility/:id')
  *               $ref: '#/components/schemas/Dentist'
  *       400:
  *         description: Unsuccess
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
  *       401:
  *         description: Not authorize to access this route
  *       403:
- *         description: User role is not authorized to access this route
+ *         description: Dentist user is not update another dentist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Dentist user is not authorized to update another dentist's profile
  *   delete:
  *     summary: Delete a dentist
  *     tags: [Dentists]
@@ -265,7 +357,17 @@ router.route('/availibility/:id')
  *         description: Dentist ID
  *     responses:
  *       200:
- *         description: Dentist successfully deleted
+ *         description: Empty object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object  
  *       401:
  *         description: Unauthorized
  *       403:
@@ -303,13 +405,62 @@ router.route('/availibility/:id')
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Dentist'
+ *               type: object
+ *               properties:
+ *                 sucess:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Dentist'
+ *       400:
+ *         description: No expertise provided
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: No expertise provided
  *       401:
  *         description: Unauthorized
- *       403:
- *         description: Forbidden - Admin or dentist access required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: This user is not authorized to update this Expertise
+ *       404:
+ *         description: Dentist not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Dentist not found
  *       500:
  *         description: Unsuccess
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
  *   delete:
  *     summary: Remove expertise from a dentist
  *     tags: [Dentists]
@@ -335,19 +486,66 @@ router.route('/availibility/:id')
  *                 example: "Implant Dentistry"
  *     responses:
  *       200:
- *         description: Expertise successfully removed
+ *         description: Expertise successfully added
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Dentist'
+ *               type: object
+ *               properties:
+ *                 sucess:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Dentist'
  *       400:
  *         description: No expertise provided
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: No expertise provided
  *       401:
  *         description: Unauthorized
- *       403:
- *         description: Forbidden - Admin or dentist access required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: This user is not authorized to update this Expertise
  *       404:
  *         description: Dentist not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Dentist not found
+ *       500:
+ *         description: Unsuccess
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
  *
  * /dentists/reviews/{id}:
  *   get:
@@ -366,7 +564,42 @@ router.route('/availibility/:id')
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Dentist/properties/rating'
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 count:
+ *                   type: number
+ *                   example: 1
+ *                 data:
+ *                   $ref: '#/components/schemas/Dentist/properties/rating'
+ *       404:
+ *         description: Dentist not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: No dentist found with the id of 67fde0a05a0148bd6061706c
+ *       500:
+ *         description: Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Server Error
  *   put:
  *     summary: Update a review for a dentist
  *     tags: [Dentists]
@@ -396,9 +629,27 @@ router.route('/availibility/:id')
  *                 example: "Great experience with this dentist"
  *     responses:
  *       200:
- *         description: Review successfully updated
+ *         description: Dentist review information update
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Dentist'
  *       400:
  *         description: Unsuccess
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
  *       401:
  *         description: Unauthorized
  *       403:
@@ -417,9 +668,27 @@ router.route('/availibility/:id')
  *         description: Review ID
  *     responses:
  *       200:
- *         description: Review successfully deleted
+ *         description: Dentist review was delete
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Dentist'
  *       400:
  *         description: Unsuccess
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
  *       401:
  *         description: Unauthorized
  *       403:

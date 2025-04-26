@@ -25,11 +25,28 @@ router.route('/:id').get(protect, authorize('admin', 'dentist'), getUser).put(pr
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/User'
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 count:
+ *                   type: number
+ *                   example: 1
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
  *       400:
- *         description: Unsuccess
+ *         description: Unsucess
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
  *       401:
  *         description: Unauthorized
  *       403:
@@ -54,9 +71,23 @@ router.route('/:id').get(protect, authorize('admin', 'dentist'), getUser).put(pr
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
  *       400:
- *         description: Unsuccess
+ *         description: Unsucess
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
  *       401:
  *         description: Unauthorized
  *       403:
@@ -94,9 +125,23 @@ router.route('/:id').get(protect, authorize('admin', 'dentist'), getUser).put(pr
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
  *       400:
- *         description: Unsuccess
+ *         description: Unsucess
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
  *       401:
  *         description: Unauthorized
  *       403:

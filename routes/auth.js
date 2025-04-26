@@ -50,7 +50,7 @@ router.get('/logout', logout);
  *           type: string
  *           enum: [user, admin, dentist, banned]
  *           description: User role (defaults to 'user' if not specified)
- *           example: user
+ *           example: dentist
  *         createdAt:
  *           type: string
  *           format: date-time
