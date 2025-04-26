@@ -80,7 +80,81 @@ router.route('/availibility/:id')
  *               - Implant Dentistry
  *           description: expert
  *           example: ["General Dentistry", "Cosmetic Dentistry"]
- *       
+ *         picture:
+ *           type: string
+ *           description: url picture
+ *           example: "https://drive.google.com/uc?id=17c5YiQLtTjIU2LKuv39VE-kt40ADahSd"
+ *         StartingPrice:
+ *           type: number
+ *           description: strating price
+ *           minimum: 0
+ *           example: 1000
+ *         rating:
+ *           type: array
+ *           items: 
+ *             type: object
+ *             properties:
+ *               user:
+ *                 type: string
+ *                 fromat: objectId
+ *                 description: ID user who rating
+ *                 example: "6479c2b3d85857001234abcd"
+ *               rating:
+ *                 type: integer
+ *                 description: score
+ *                 minimum: 1
+ *                 maximum: 5
+ *                 example: 4
+ *               review:
+ *                 type: string
+ *                 description: review
+ *                 example: "he is a good Dentist"
+ *               createAt:
+ *                 type: string
+ *                 format: date-time
+ *                 description: day of review
+ *                 readOnly: true
+ *             required:
+ *               - user
+ *               - reating
+ *           description: All review to this Dentist
+ *         availability:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 format: date
+ *                 description: Available times
+ *                 example: "2025-04-26"
+ *               slots:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     start:
+ *                       type: string
+ *                       description: start time
+ *                       example: "09:00"
+ *                     end:
+ *                       type: string
+ *                       description: finish time
+ *                       example: "10:00"
+ *                   required:
+ *                     - start
+ *                     - end
+ *                 required:
+ *                   - date
+ *                   - slots
+ *             description: avaiable schedule
+ *           bookings:
+ *             type: array
+ *             items:
+ *               type: string
+ *               format: objectId
+ *             description: รายการ Booking ที่เกี่ยวข้อง (Virtual Field)
+ *             readOnly: true
  */
 
 module.exports = router;
