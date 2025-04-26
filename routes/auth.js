@@ -56,6 +56,11 @@ router.get('/logout', logout);
  *           format: date-time
  *           description: The date when the user was created
  *           example: 2025-04-15T12:00:00.000Z
+ *         dentist_id:
+ *           type: string
+ *           format: objectId
+ *           description: Reference to associated dentist profile (if role is dentist)
+ *           example: 507f1f77bcf86cd799439011
  *   responses:
  *     UserResponse:
  *       type: object
