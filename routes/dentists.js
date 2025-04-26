@@ -156,5 +156,312 @@ router.route('/availibility/:id')
  *             description: รายการ Booking ที่เกี่ยวข้อง (Virtual Field)
  *             readOnly: true
  */
+/**
+ * @swagger
+ * tags:
+ *   name: Dentists
+ *   description: API for managing dentist information and related operations
+ * 
+ * /dentists:
+ *   get:
+ *     summary: Get all dentists
+ *     tags: [Dentists]
+ *     responses:
+ *       200:
+ *         description: List of all dentists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Dentist'
+ *       400:
+ *         description: sucess false
+ *   post:
+ *     summary: Create a new dentist
+ *     tags: [Dentists]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Dentist'
+ *     responses:
+ *       201:
+ *         description: Successfully created dentist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Dentist'
+ *       401:
+ *         description: Not authorize to access this route
+ *       403:
+ *         description: User role is not authorized to access this route
+ * 
+ * /dentists/{id}:
+ *   get:
+ *     summary: Get a specific dentist by ID
+ *     tags: [Dentists]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Dentist ID
+ *     responses:
+ *       200:
+ *         description: Dentist information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Dentist'
+ *       400:
+ *         description: Unsucess
+ *   put:
+ *     summary: Update a dentist's information
+ *     tags: [Dentists]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Dentist ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Dentist'
+ *     responses:
+ *       200:
+ *         description: Successfully updated dentist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Dentist'
+ *       400:
+ *         description: Unsuccess
+ *       401:
+ *         description: Not authorize to access this route
+ *       403:
+ *         description: User role is not authorized to access this route
+ *   delete:
+ *     summary: Delete a dentist
+ *     tags: [Dentists]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Dentist ID
+ *     responses:
+ *       200:
+ *         description: Dentist successfully deleted
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       404:
+ *         description: Dentist not found
+ *
+ * /dentists/{id}/expertise:
+ *   put:
+ *     summary: Add expertise to a dentist
+ *     tags: [Dentists]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Dentist ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               expertise:
+ *                 type: string
+ *                 description: Expertise to add
+ *                 example: "Implant Dentistry"
+ *     responses:
+ *       200:
+ *         description: Expertise successfully added
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Dentist'
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Admin or dentist access required
+ *       500:
+ *         description: Unsuccess
+ *   delete:
+ *     summary: Remove expertise from a dentist
+ *     tags: [Dentists]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Dentist ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               expertise:
+ *                 type: string
+ *                 description: Expertise to remove
+ *                 example: "Implant Dentistry"
+ *     responses:
+ *       200:
+ *         description: Expertise successfully removed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Dentist'
+ *       400:
+ *         description: No expertise provided
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Admin or dentist access required
+ *       404:
+ *         description: Dentist not found
+ *
+ * /dentists/reviews/{id}:
+ *   get:
+ *     summary: Get all reviews for a dentist
+ *     tags: [Dentists]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Dentist ID
+ *     responses:
+ *       200:
+ *         description: List of reviews
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Dentist/properties/rating'
+ *   put:
+ *     summary: Update a review for a dentist
+ *     tags: [Dentists]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Dentist ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rating:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 5
+ *                 example: 4
+ *               review:
+ *                 type: string
+ *                 example: "Great experience with this dentist"
+ *     responses:
+ *       200:
+ *         description: Review successfully updated
+ *       400:
+ *         description: Unsuccess
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Admin or user access required
+ *   delete:
+ *     summary: Delete a review
+ *     tags: [Dentists]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Review ID
+ *     responses:
+ *       200:
+ *         description: Review successfully deleted
+ *       400:
+ *         description: Unsuccess
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Admin or user access required
+ *
+ * /dentists/availibility/{id}:
+ *   get:
+ *     summary: Get booked dates for a dentist
+ *     tags: [Dentists]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Dentist ID
+ *     responses:
+ *       200:
+ *         description: List of booked dates
+ *         content:
+ *           application/json:
+ *             schema:
+ *               data: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     format: objectId
+ *                     example: "68046ea78f9fb81cee08b0dd"
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                     description: Available times
+ *                     example: "2025-04-26"
+ *
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
 
 module.exports = router;
