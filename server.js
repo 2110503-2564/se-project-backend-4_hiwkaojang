@@ -43,12 +43,6 @@ app.use(xss());
 //Prevent http param pollutions
 app.use(hpp());
 
-//Enable CORS
-const corsOptions = {
-    origin: '*',  // Allow all origins for testing
-  };
-app.use(cors(corsOptions));  // CORS middleware should be above routes
-
 //Rate Limiting
 const limiter = rateLimit({
     windowMs: 10 * 60 * 1000, // 10 mins
@@ -66,7 +60,7 @@ const swaggerOptions={
         },
         servers: [
             {
-                url: 'http://localhost:5001/api/v1'
+                url: process.env.HOST + ':' + process.env.PORT + '/api/v1'
             }
         ]
     },
@@ -84,7 +78,7 @@ app.use('/api/v1/users', users);
 
 const PORT = process.env.PORT || 5003;
 
-const server = app.listen(PORT, console.log('Server running in ', process.env.NODE_ENV, 'on ' + process.env.HOST + " :" + PORT));
+const server = app.listen(PORT, console.log('Server running in ', process.env.NODE_ENV, 'on ' + process.env.HOST + ":" + PORT));
 
 //Handle unhandled promise rejections
 process.on('unhandledRejection', (err,promise) => {
