@@ -43,6 +43,12 @@ app.use(xss());
 //Prevent http param pollutions
 app.use(hpp());
 
+//Enable CORS
+const corsOptions = {
+    origin: '*',  // Allow all origins for testing
+  };
+app.use(cors(corsOptions));  // CORS middleware should be above routes
+
 //Rate Limiting
 const limiter = rateLimit({
     windowMs: 10 * 60 * 1000, // 10 mins
