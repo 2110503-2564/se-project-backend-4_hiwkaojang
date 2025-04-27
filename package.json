@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
+	"test-coverage" : "jest --watchAll --coverage",
     "dev": "nodemon server.js",
     "start": "node server.js"
   },
